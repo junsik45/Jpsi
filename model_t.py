@@ -1,3 +1,6 @@
+import torch
+import torch.nn as nn
+
 class TransformerClassifier(nn.Module):
     def __init__(self, input_dim, num_classes, hidden_dim=128, num_heads=4, num_layers=2):
         super(TransformerClassifier, self).__init__()
@@ -17,10 +20,12 @@ class TransformerClassifier(nn.Module):
 
     def forward(self, x):
         batch_size = x.shape[0]
+        print(x.size())
         x = self.embedding(x)  # (batch, seq_len, hidden_dim)
 
         # Append CLS token
         cls_tokens = self.cls_token.expand(batch_size, -1, -1)  # (batch, 1, hidden_dim)
+        print(cls_tokens.size(), x.size())
         x = torch.cat([cls_tokens, x], dim=1)  # (batch, seq_len+1, hidden_dim)
 
         x = self.transformer(x)  # Transformer processing
